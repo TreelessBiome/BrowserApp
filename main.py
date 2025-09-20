@@ -28,4 +28,22 @@ class URL:
 
         response = s.makefile("r", encoding="utf-8", newline="\r\n")
 
+        statusLine = response.readline()
+        version, status, explanation = statusLine.split(" ", 2)
+
+        response_headers = {}
+        while True:
+            line = response.readline()
+            if line == "\r\n": break
+            header, value = line.split(":", 1)
+            response_headers[header.casefold()] = value.strip()
+
+        assert "transfer_encoding" not in response_headers
+        assert "character_encoding" not in response_headers
+
+
+        content = response.read()
+
+        return content
+
 
